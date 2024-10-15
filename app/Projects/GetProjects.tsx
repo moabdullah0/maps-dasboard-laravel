@@ -11,10 +11,12 @@ import PostsProject from "./PostProject";
 import UpdatesProject from "./UpdateProject";
 import { Project } from "./schema";
 import Popup from "@/components/shared/pop-up/pop-up";
+import { motion } from "framer-motion"; 
 
 const ListProjects = () => {
+ 
   const { data, isError, isLoading } = FetchProjects();
-  console.log(data?.data); // Log to ensure data is being accessed correctly
+  console.log(data?.data); 
 
   const deleteProjects = useDeleteProjects();
   const [showPopup, setShowPopup] = useState(false);
@@ -53,7 +55,7 @@ const ListProjects = () => {
       { accessorKey: "location", header: "موقع المشروع" },
       { accessorKey: "status", header: "حالة المشروع" },
       {
-        id: "actions-list",  
+        id: "actions-list",
         header: "الإجراءات",
         cell: ({ row }: { row: { original: Project } }) => (
           <ActionsComponent
@@ -68,7 +70,6 @@ const ListProjects = () => {
     [handleEdit, handleDelete, isLoadingDelete]
   );
 
-  // Display loading or error states
   if (isError) return <h1>Error loading data</h1>;
   if (isLoading) {
     return (
@@ -83,7 +84,7 @@ const ListProjects = () => {
       <div className="flex justify-between items-center mb-2">
         <button
           onClick={() => {
-            setEditItemId(null); // Ensure ID is cleared for a new project
+            setEditItemId(null);
             setShowPopup(true);
           }}
           className="px-6 py-2 rounded-3xl bg-blue-600 font-medium text-white text-md flex items-center gap-2"
@@ -94,13 +95,23 @@ const ListProjects = () => {
       </div>
 
       {showPopup && (
-        <Popup onClose={closePopup}>
-          {editItemId !== null ? (
-            <UpdatesProject id={editItemId} onClose={closePopup} />
-          ) : (
-            <PostsProject onClose={closePopup} />
-          )}
-        </Popup>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 flex items-center justify-center z-50"
+        >
+          <div className="relative w-[90%] max-w-lg h-[80%] max-h-screen bg-white p-6 rounded-lg shadow-lg overflow-y-auto">
+            <Popup onClose={closePopup}>
+              {editItemId !== null ? (
+                <UpdatesProject id={editItemId} onClose={closePopup} />
+              ) : (
+                <PostsProject onClose={closePopup} />
+              )}
+            </Popup>
+          </div>
+        </motion.div>
       )}
 
       <TableComponent<Project> data={data?.data || []} columns={columns} globalFilter={globalFilter} />

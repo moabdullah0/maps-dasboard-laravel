@@ -2,7 +2,7 @@
 import React from "react";
 
 import Layout from "../../components/Dashboard/Layout/Layout";
-import ListProjects from "./GetAds";
+import ListProjects from "./GetProjects";
 
 const Ads = () => {
   return (
